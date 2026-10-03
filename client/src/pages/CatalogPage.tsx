@@ -9,8 +9,13 @@ import {
   saveLocal,
 } from "@/lib/catalog";
 import { CouponCard } from "@/components/CouponCard";
+import SubmitCoupon from "@/components/SubmitCoupon";
 
 const pages: Record<string, [string, string]> = {
+  "/submit-coupon": [
+    "أضف كوبونك",
+    "شارك عرضك مع فريق كوبونيا ليصل إلى المزيد من المتسوقين.",
+  ],
   "/stores": ["كل المتاجر", "ابدأ بمتجرك المفضل واكتشف الكوبونات المتاحة."],
   "/coupons": [
     "تصفح الكوبونات",
@@ -444,6 +449,7 @@ export default function CatalogPage({
           ))}
         </div>
       )}
+      {location === "/submit-coupon" && <SubmitCoupon />}
       {location === "/account" && <Profile />}
       {["/contact", "/report"].includes(location) && (
         <SupportForm key={location} report={location === "/report"} />

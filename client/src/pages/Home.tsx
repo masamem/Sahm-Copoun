@@ -52,7 +52,9 @@ function BrandMark({ compact = false }: { compact?: boolean }) {
       {!compact && (
         <span className="brand-mark__text">
           <strong>كوبونيا</strong>
-          <small lang="en" dir="ltr">Coponya</small>
+          <small lang="en" dir="ltr">
+            Coponya
+          </small>
         </span>
       )}
     </Link>
@@ -121,7 +123,9 @@ export default function Home() {
     setQuery("");
     window.scrollTo(0, 0);
     document.title =
-      location === "/" ? "Coponya — كوبونيا | كوبونات وعروض السعودية" : document.title;
+      location === "/"
+        ? "Coponya — كوبونيا | كوبونات وعروض السعودية"
+        : document.title;
   }, [location]);
   const openCoupon = (coupon: (typeof coupons)[number]) => {
     setCopied(false);
@@ -218,7 +222,17 @@ export default function Home() {
             </Link>
           </nav>
           <div className="header-actions">
-            <button className="header-search-button" onClick={goSearch} aria-label="ابحث عن متجر أو كوبون">
+            <Link
+              href="/submit-coupon"
+              className="button button--primary button--small submit-nav-link"
+            >
+              أضف كوبونك
+            </Link>
+            <button
+              className="header-search-button"
+              onClick={goSearch}
+              aria-label="ابحث عن متجر أو كوبون"
+            >
               <Search size={18} />
               <span>ابحث عن متجر أو كوبون...</span>
             </button>
@@ -564,6 +578,7 @@ export default function Home() {
             <h3>عن الموقع</h3>
             <Link href="/about">من نحن</Link>
             <Link href="/contact">تواصل معنا</Link>
+            <Link href="/submit-coupon">أضف كوبونك</Link>
             <Link href="/privacy">سياسة الخصوصية</Link>
             <Link href="/terms">الشروط والأحكام</Link>
           </div>
@@ -582,7 +597,9 @@ export default function Home() {
           </div>
         </div>
         <div className="container footer-bottom">
-          <span>© {new Date().getFullYear()} كوبونيا. جميع الحقوق محفوظة.</span>
+          <span>
+            © {new Date().getFullYear()} كوبونيا. جميع الحقوق محفوظة.
+          </span>
           <span>
             صُنع في السعودية <span className="saudi-dot" />
           </span>

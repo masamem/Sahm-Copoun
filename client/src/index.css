@@ -134,6 +134,30 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }
 
 /* Coponya brand and Latin-digit typography. */
+.submission-layout { display:grid; grid-template-columns:minmax(240px,.75fr) minmax(0,1.4fr); gap:36px; align-items:start; }
+.submission-intro { padding:28px; border-radius:20px; background:var(--olive-soft); }
+.submission-intro h2 { font-size:28px; margin:20px 0 12px; color:var(--olive-dark); }
+.submission-intro p { line-height:1.9; color:#52685f; }
+.submission-icon { display:inline-flex; padding:16px; border-radius:16px; color:var(--olive); background:white; }
+.submission-intro ul { list-style:none; padding:0; display:grid; gap:18px; margin:28px 0; }
+.submission-intro li { display:flex; gap:10px; align-items:start; line-height:1.7; }
+.submission-intro li svg { flex-shrink:0; margin-top:5px; color:var(--olive); }
+.submission-note { font-size:13px; }
+.submission-panel { max-width:none; background:#fff; }
+.submission-panel h2 { margin-top:0; }
+.submission-form { max-width:none; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.submission-form input,.submission-form select,.submission-form textarea { width:100%; min-width:0; padding:12px; font:inherit; border:1px solid var(--line); border-radius:10px; background:var(--mist); }
+.submission-form .consent-label { display:flex; gap:10px; align-items:flex-start; font-size:13px; font-weight:400; line-height:1.8; }
+.consent-label input { width:18px; height:18px; margin-top:4px; flex-shrink:0; accent-color:var(--olive); }
+.consent-label a { color:var(--olive); text-decoration:underline; }
+.form-error { color:#b42318!important; }
+.submission-review { margin-top:30px; padding-top:20px; border-top:1px solid var(--line); }
+.submission-review pre { font:inherit; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.9; padding:16px; background:var(--mist); border-radius:12px; }
+.submission-actions { display:flex; flex-wrap:wrap; gap:12px; }
+.submission-review p { font-size:13px; }
+@media(max-width:1100px) { .submit-nav-link { padding:0 10px; }.header-inner { gap:18px; }.main-nav { gap:15px; }.header-search-button { width:42px; justify-content:center; }.header-search-button span { display:none; } }
+@media(max-width:700px) { .submission-layout { grid-template-columns:1fr; gap:24px; }.submission-intro { padding:22px; }.form-row { grid-template-columns:1fr; }.submit-nav-link { font-size:11px; padding:0 10px; }.submission-panel { padding:22px 16px; } }
 .brand-mark__text strong { letter-spacing:0; font-size:20px; }
 .brand-mark__text small { font-size:10px; letter-spacing:.06em; }
 .discount-value,.discount-pill,.price-row,.hero-stats strong,.floating-save strong,.step > span,.modal-code { font-variant-numeric:lining-nums tabular-nums; }
