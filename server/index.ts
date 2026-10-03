@@ -23,5 +23,9 @@ app.get("*", (_req, res) => {
   res.sendFile(path.join(staticPath, "index.html"));
 });
 
-// Vercel handles the HTTP server lifecycle, so do not call app.listen()/server.listen().
+// Vercel serves dist/public directly. The server also supports local production previews.
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  const port = Number(process.env.PORT || 3000);
+  app.listen(port, () => console.log(`Sahm is running on port ${port}`));
+}
 export default app;
