@@ -229,3 +229,15 @@ h1,h2,h3,h4,h5,h6 { letter-spacing:normal; }
 /* Reference typography: Alexandria headings with IBM Plex Sans Arabic body text. */
 body { font-family:'IBM Plex Sans Arabic','Alexandria',system-ui,sans-serif; }
 h1,h2,h3,h4,h5,h6,.brand-mark__text strong { font-family:'Alexandria','IBM Plex Sans Arabic',system-ui,sans-serif; }
+
+
+/* سوق الضوء: administration and connection states. */
+.admin-toolbar { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
+.admin-toolbar [aria-pressed="true"] { background:var(--olive); color:white; }
+.admin-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; align-items:start; }
+.admin-list { display:grid; gap:16px; }.admin-list .content-panel { margin:0; }
+.admin-page .admin-checkbox { display:flex; flex-direction:row; align-items:center; gap:10px; }
+.admin-checkbox input { width:20px; height:20px; }
+.admin-notice,.catalog-notice { padding:16px; border-radius:12px; background:var(--olive-soft); color:var(--olive); text-align:center; }
+.admin-page button:disabled { opacity:.6; cursor:wait; }
+@media(max-width:700px) { .admin-layout { grid-template-columns:1fr; }.admin-page input,.admin-page select,.admin-page textarea { font-size:16px; } }

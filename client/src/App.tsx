@@ -1,3 +1,4 @@
+import { CatalogProvider } from "./contexts/CatalogContext";
 /* سوق الضوء: global RTL shell for Coponya, with a light editorial commerce tone. */
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,7 +16,7 @@ export default function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <CatalogProvider><Router /></CatalogProvider>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

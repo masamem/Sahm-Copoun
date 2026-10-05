@@ -1,4 +1,9 @@
 export type Coupon = {
+  isDemo?: boolean;
+  websiteUrl?: string;
+  terms?: string;
+  expiresAt?: string | null;
+  verifiedAt?: string | null;
   store: string;
   initial: string;
   title: string;

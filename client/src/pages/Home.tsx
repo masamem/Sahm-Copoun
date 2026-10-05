@@ -6,7 +6,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { toast } from "sonner";
 import CatalogPage from "./CatalogPage";
 import { CouponCard } from "@/components/CouponCard";
-import { stores, coupons, categories, deals } from "@/lib/data";
+import { useCatalog } from "@/contexts/CatalogContext";
+import Admin from "./Admin";
 import { matchesSearch, readSaved, saveLocal } from "@/lib/catalog";
 import {
   ArrowLeft,
@@ -103,6 +104,7 @@ function SectionHeading({
 
 export default function Home() {
   const [location, navigate] = useLocation();
+  const { stores, coupons, categories, deals, isLive, loading, error, reload } = useCatalog();
   const [query, setQuery] = useState("");
   const [modalCoupon, setModalCoupon] = useState<
     (typeof coupons)[number] | null
@@ -178,6 +180,7 @@ export default function Home() {
     }
   };
 
+  if (location === "/admin") return <Admin />;
   return (
     <div dir="rtl" className="app-shell">
       <a className="skip-link" href="#main-content">
@@ -261,9 +264,9 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="demo-banner">
-        نسخة تجريبية — المتاجر والأكواد أمثلة للتصفح وليست عروضاً مؤكدة.
-      </div>
+      {!isLive && <div className="demo-banner">نسخة تجريبية — المتاجر والأكواد أمثلة للتصفح وليست عروضاً مؤكدة.</div>}
+      {loading && <p className="catalog-notice" role="status">جارٍ تحميل المتاجر والكوبونات…</p>}
+      {error && <div className="catalog-notice" role="alert">{error} <button onClick={reload} className="text-link">إعادة المحاولة</button></div>}
       <main id="main-content">
         {location !== "/" ? (
           <CatalogPage
@@ -351,20 +354,20 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="floating-save">
-                    <span>توفير تجريبي</span>
-                    <strong><RiyalAmount value={186} /></strong>
-                    <small>مثال توضيحي</small>
+                    <span>{isLive ? "اكتشف فرص التوفير" : "توفير تجريبي"}</span>
+                    <strong>{isLive ? "كوبونيا" : <RiyalAmount value={186} />}</strong>
+                    <small>{isLive ? "اختر كوبونك" : "مثال توضيحي"}</small>
                   </div>
                 </div>
               </div>
               <div className="hero-stats container">
                 <div>
                   <strong>{coupons.length}</strong>
-                  <span>أكواد تجريبية</span>
+                  <span>{isLive ? "كوبونات متاحة" : "أكواد تجريبية"}</span>
                 </div>
                 <div>
                   <strong>{stores.length}</strong>
-                  <span>متاجر تجريبية</span>
+                  <span>{isLive ? "متاجر متاحة" : "متاجر تجريبية"}</span>
                 </div>
                 <div>
                   <strong>{categories.length}</strong>
@@ -399,7 +402,7 @@ export default function Home() {
                             tone={store.tone}
                           />
                           <span className="store-mini-badge">
-                            <Tag size={10} /> تجريبي
+                            <Tag size={10} /> {isLive ? "متجر" : "تجريبي"}
                           </span>
                         </div>
                         <ChevronLeft size={18} className="store-arrow" />
@@ -428,8 +431,7 @@ export default function Home() {
                       link="كل الكوبونات"
                     />
                     <p>
-                      استكشف الأكواد التجريبية، واحفظ اختياراتك للوصول إليها
-                      بسرعة.
+                      {isLive ? "اقرأ الشروط واختر الكوبون المناسب، واحفظه للوصول إليه بسرعة." : "استكشف الأكواد التجريبية، واحفظ اختياراتك للوصول إليها بسرعة."}
                     </p>
                   </div>
                   <img src={spotlightUrl} alt="رسوم تجريدية لقسائم التوفير" />
@@ -448,7 +450,7 @@ export default function Home() {
                   ) : (
                     <div className="empty-state">
                       <Search size={28} />
-                      <strong>لم نجد كوبوناً مطابقاً</strong>
+                      <strong>{loading ? "جارٍ تحميل الكوبونات" : "لا توجد كوبونات متاحة"}</strong>
                       <span>جرّب البحث باسم متجر آخر.</span>
                     </div>
                   )}
@@ -671,7 +673,7 @@ export default function Home() {
                 initial={modalCoupon.initial}
                 tone={modalCoupon.tone}
               />
-              <span className="modal-verified">كوبون تجريبي</span>
+              <span className="modal-verified">{modalCoupon.isDemo === false ? (modalCoupon.verifiedAt ? "تمت المراجعة" : "كوبون خصم") : "كوبون تجريبي"}</span>
               <Dialog.Title>{modalCoupon.title}</Dialog.Title>
               <Dialog.Description>{modalCoupon.description}</Dialog.Description>
               <div className="modal-code" tabIndex={0}>
@@ -701,11 +703,11 @@ export default function Home() {
                 </Link>
               </Dialog.Close>
               <div className="coupon-conditions">
+                {modalCoupon.websiteUrl && <a className="button button--outline" href={modalCoupon.websiteUrl} target="_blank" rel="noopener noreferrer sponsored">زيارة المتجر</a>}
+                {modalCoupon.expiresAt && <p>ينتهي بتاريخ {modalCoupon.expiresAt}</p>}
                 <strong>شروط الاستخدام</strong>
                 <p>
-                  مثال توضيحي لتجربة الموقع. لا تستخدم هذا الكود باعتباره عرضاً
-                  فعلياً. عند إضافة عروض حقيقية، تحقق من الحد الأدنى للطلب
-                  والمنتجات المستثناة وتاريخ الصلاحية.
+                  {modalCoupon.isDemo === false ? modalCoupon.terms : "مثال توضيحي لتجربة الموقع. لا تستخدم هذا الكود باعتباره عرضاً فعلياً."}
                 </p>
                 <Link href={`/report?code=${modalCoupon.code}`}>
                   الإبلاغ عن مشكلة
@@ -722,3 +724,4 @@ export default function Home() {
 function ShoppingBagIcon() {
   return <span className="custom-step-icon">⌂</span>;
 }
+

@@ -1,0 +1,11 @@
+import type { Coupon } from "./catalog";
+import type { CouponRecord, StoreRecord } from "./backend";
+export function mapCatalog(storeRows: StoreRecord[], couponRows: CouponRecord[], today = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Riyadh" }).format(new Date())) {
+  const activeStores = storeRows.filter(s => s.active);
+  const coupons: Coupon[] = couponRows.filter(c => c.published && (!c.expires_at || c.expires_at >= today) && activeStores.some(s => s.id === c.store_id)).map(c => {
+    const store = activeStores.find(s => s.id === c.store_id)!;
+    return { store: store.name, initial: store.initial, tone: store.tone, title: c.title, description: c.description, discount: c.discount, code: c.code, category: c.category, state: "published", uses: "", verified: c.verified_at ? "تمت المراجعة" : "", isDemo: false, websiteUrl: store.website_url, terms: c.terms, expiresAt: c.expires_at, verifiedAt: c.verified_at };
+  });
+  const stores = activeStores.map(s => ({ name: s.name, initial: s.initial, tone: s.tone, discount: `${Math.max(0, ...coupons.filter(c => c.store === s.name).map(c => parseFloat(c.discount)))}%`, count: `${coupons.filter(c => c.store === s.name).length} كوبون` }));
+  return { stores, coupons };
+}
