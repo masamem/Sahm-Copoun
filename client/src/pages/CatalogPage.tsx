@@ -219,7 +219,7 @@ export default function CatalogPage({
   onFavorite: (code: string) => void;
   onReveal: (coupon: Coupon) => void;
 }) {
-  const { coupons, stores, categories, deals, isLive } = useCatalog();
+  const { coupons, stores, categories, deals, isLive, loading } = useCatalog();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("default");
@@ -248,7 +248,7 @@ export default function CatalogPage({
     ? [store.name, isLive ? "الكوبونات المتاحة لهذا المتجر وشروط استخدامها." : "الكوبونات والعروض المتاحة لهذا المتجر التجريبي."]
     : categoryDetail
       ? [categoryDetail[0], "تصفح الكوبونات المتاحة في هذا التصنيف."]
-      : (isLive && livePages[location]) || pages[location];
+      : (loading && location.startsWith("/stores/") ? ["جارٍ تحميل المتجر", "نحمّل معلومات المتجر وكوبوناته…"] : (isLive && livePages[location]) || pages[location]);
   useEffect(() => {
     document.title = `${info?.[0] || "الصفحة غير موجودة"} — Coponya · كوبونيا`;
     document.querySelector('meta[name="description"]')?.setAttribute("content",
@@ -277,6 +277,7 @@ export default function CatalogPage({
       <nav className="breadcrumbs" aria-label="مسار التصفح">
         <Link href="/">الرئيسية</Link>
         <span>/</span>
+        {store&&<><Link href="/stores">المتاجر</Link><span>/</span></>}
         <span>{info?.[0] || "الصفحة غير موجودة"}</span>
       </nav>
       {store ? <StoreOverview store={store} couponCount={coupons.filter(c=>c.store===store.name).length}/> : <div className="page-heading">
@@ -347,12 +348,12 @@ export default function CatalogPage({
               <h2>
                 {location === "/favorites" && !favorites.length
                   ? "لم تحفظ أي كوبون بعد"
-                  : "لا توجد كوبونات مطابقة"}
+                  : store ? "لا توجد كوبونات متاحة لهذا المتجر حالياً" : "لا توجد كوبونات مطابقة"}
               </h2>
               <p>
                 {location === "/favorites" && !favorites.length
                   ? "اضغط على القلب بجانب الكوبون لإضافته هنا."
-                  : "جرّب كلمة أخرى أو تصنيفاً مختلفاً."}
+                  : store ? "يمكنك قراءة دليل المتجر أدناه أو تصفح كوبونات المتاجر الأخرى." : "جرّب كلمة أخرى أو تصنيفاً مختلفاً."}
               </p>
               <button
                 className="button button--outline"

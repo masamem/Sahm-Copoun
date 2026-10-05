@@ -1,4 +1,5 @@
 /* سوق الضوء: readable RTL administration with explicit publish controls. */
+import { StoreOverview, StoreArticle } from "@/components/StoreProfile";
 import { useState } from "react";
 import { Link } from "wouter";
 import { BackendError, backendConfigured, backendRequest, type StoreRecord, type CouponRecord } from "@/lib/backend";
@@ -14,6 +15,8 @@ export default function Admin() {
   const [store, setStore] = useState(blankStore);
   const [coupon, setCoupon] = useState(blankCoupon);
   const [tab, setTab] = useState("stores");
+  const [preview, setPreview] = useState(false);
+  const profile = {name:store.name||"اسم المتجر",initial:store.initial,tone:store.tone,count:"",discount:"",websiteUrl:store.website_url,summary:store.summary,about:store.about,products:store.products,shipping:store.shipping,payment:store.payment,returnsPolicy:store.returns_policy,faq:store.faq,logoUrl:store.logo_url};
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   async function load(accessToken: string) {
@@ -46,6 +49,8 @@ export default function Admin() {
             <label>رابط شعار المتجر (اختياري)<input type="url" dir="ltr" pattern="https://.*" maxLength={2048} value={store.logo_url} onChange={e=>setStore({...store,logo_url:e.target.value})}/></label>
             <label>نبذة مختصرة<textarea rows={3} maxLength={300} value={store.summary} onChange={e=>setStore({...store,summary:e.target.value})}/><small>{store.summary.length}/300</small></label>
             {([['about','نبذة عن المتجر'],['products','المنتجات والأقسام'],['shipping','الشحن والتوصيل'],['payment','طرق الدفع'],['returns_policy','الاستبدال والاسترجاع'],['faq','الأسئلة الشائعة']] as const).map(([key,label])=><label key={key}>{label}<textarea rows={key==='about'?6:4} maxLength={key==='about'?12000:4000} value={store[key]} onChange={e=>setStore({...store,[key]:e.target.value})}/>{key==='faq'&&<small>اكتب السؤال في أول سطر والإجابة تحته. افصل كل سؤال وإجابته عن التالي بسطر فارغ.</small>}</label>)}
+            <button type="button" className="button button--outline" aria-expanded={preview} onClick={()=>setPreview(!preview)}>{preview?"إغلاق المعاينة":"معاينة المحتوى قبل النشر"}</button>
+            {preview&&<div className="store-editor-preview"><StoreOverview store={profile} couponCount={coupons.filter(c=>c.store_id===store.id&&c.published).length}/><StoreArticle store={profile} related={[]}/></div>}
             {store.name&&<Link className="text-link" href={`/stores/${encodeURIComponent(store.name)}`} target="_blank">عرض صفحة المتجر بعد الحفظ</Link>}
           </fieldset>
           <label className="admin-checkbox"><input type="checkbox" checked={store.active} onChange={e=>setStore({...store,active:e.target.checked})}/>إظهار المتجر للزوار</label>
