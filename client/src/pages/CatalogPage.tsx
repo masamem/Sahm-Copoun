@@ -1,3 +1,4 @@
+/* سوق الضوء: searchable store pages and readable Arabic metadata. */
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, Search, Heart, SlidersHorizontal } from "lucide-react";
@@ -243,6 +244,10 @@ export default function CatalogPage({
       : pages[location];
   useEffect(() => {
     document.title = `${info?.[0] || "الصفحة غير موجودة"} — Coponya · كوبونيا`;
+    document.querySelector('meta[name="description"]')?.setAttribute("content",
+      store ? `تصفح كوبونات ${store.name} على كوبونيا، واقرأ التفاصيل وانسخ الكود. العروض الحالية تجريبية.`
+        : `${info?.[0] || "كوبونيا"}: ${info?.[1] || "تصفح المتاجر والكوبونات والعروض."}`
+    );
   }, [location]);
   const isCoupons =
     ["/coupons", "/favorites"].includes(location) ||

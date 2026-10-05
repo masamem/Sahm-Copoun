@@ -163,3 +163,22 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 .discount-value,.discount-pill,.price-row,.hero-stats strong,.floating-save strong,.step > span,.modal-code { font-variant-numeric:lining-nums tabular-nums; }
 .brand-mark__symbol img { width:34px; height:34px; }
 @media(max-width:700px) { .brand-mark__text small { display:block; font-size:9px; }.brand-mark__text strong { font-size:18px; } }
+
+/* سوق الضوء: visible search results and comfortable mobile touch targets. */
+.search-discovery { max-width:540px; margin-top:12px; padding:14px; border:1px solid var(--line); border-radius:14px; background:white; }
+.search-discovery p { margin:0 0 10px; color:var(--muted); font-size:13px; }
+.search-discovery nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+.search-discovery nav a { display:flex; align-items:center; gap:8px; min-height:44px; padding:8px 12px; border-radius:9px; background:var(--olive-soft); color:var(--olive); font-size:13px; }
+.search-discovery button { min-height:44px; background:transparent; cursor:pointer; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid var(--olive); outline-offset:3px; }
+@media(max-width:700px) {
+ .coupon-card .button, .coupon-card .terms-link, .coupon-card .icon-button { min-height:44px; }
+ .coupon-card .terms-link { font-size:12px; }
+ .coupon-card__main p { font-size:12px; }
+ .coupon-meta { font-size:11px; }
+ .catalog-toolbar > .filter-label, .catalog-toolbar > select { flex:1; min-width:0; }
+ .mobile-bottom-nav { height:calc(67px + env(safe-area-inset-bottom)); padding-bottom:env(safe-area-inset-bottom); }
+ .mobile-bottom-nav a { min-height:44px; min-width:48px; justify-content:center; }
+ .site-footer { padding-bottom:calc(90px + env(safe-area-inset-bottom)); }
+ .hero-search input { font-size:16px; }
+}

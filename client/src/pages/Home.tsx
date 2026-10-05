@@ -122,6 +122,9 @@ export default function Home() {
     setModalCoupon(null);
     setQuery("");
     window.scrollTo(0, 0);
+    if (location === "/") {
+      document.querySelector('meta[name="description"]')?.setAttribute("content", "كوبونيا — اكتشف الكوبونات والعروض وتصفح المتاجر واحفظ اختياراتك المفضلة.");
+    }
     document.title =
       location === "/"
         ? "Coponya — كوبونيا | كوبونات وعروض السعودية"
@@ -154,6 +157,9 @@ export default function Home() {
         : coupons,
     [query],
   );
+  const matchingStores = query.trim()
+    ? stores.filter((store) => matchesSearch(store.name, query))
+    : [];
   const toggleFavorite = (name: string) =>
     setFavorites((current) =>
       current.includes(name)
@@ -181,11 +187,11 @@ export default function Home() {
           <button
             className="mobile-menu-button icon-button"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="فتح القائمة"
+            aria-label={menuOpen ? "إغلاق القائمة" : "فتح القائمة"}
             aria-expanded={menuOpen}
             aria-controls="main-nav"
           >
-            <Menu size={22} />
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
           <BrandMark />
           <nav
@@ -305,6 +311,21 @@ export default function Home() {
                       ابحث عن كوبون <ArrowLeft size={17} />
                     </button>
                   </form>
+                  {query.trim() && (
+                    <div className="search-discovery">
+                      <p role="status">{matchingStores.length} متجر · {filteredCoupons.length} كوبون مطابق</p>
+                      {matchingStores.length > 0 && (
+                        <nav aria-label="المتاجر المطابقة للبحث">
+                          {matchingStores.map((store) => (
+                            <Link key={store.name} href={`/stores/${encodeURIComponent(store.name)}`}>
+                              <Store size={16} /> {store.name} <ArrowLeft size={14} />
+                            </Link>
+                          ))}
+                        </nav>
+                      )}
+                      <button className="text-link" onClick={() => setQuery("")}>مسح البحث <X size={14} /></button>
+                    </div>
+                  )}
                   <div className="hero-proof">
                     <div className="proof-avatars">
                       <span>أ</span>
@@ -337,15 +358,15 @@ export default function Home() {
               </div>
               <div className="hero-stats container">
                 <div>
-                  <strong>3</strong>
+                  <strong>{coupons.length}</strong>
                   <span>أكواد تجريبية</span>
                 </div>
                 <div>
-                  <strong>5</strong>
+                  <strong>{stores.length}</strong>
                   <span>متاجر تجريبية</span>
                 </div>
                 <div>
-                  <strong>8</strong>
+                  <strong>{categories.length}</strong>
                   <span>تصنيفات</span>
                 </div>
                 <div>
@@ -607,11 +628,11 @@ export default function Home() {
       </footer>
 
       <div className="mobile-bottom-nav">
-        <Link href="/">
+        <Link href="/" aria-current={location === "/" ? "page" : undefined}>
           <Store size={18} />
           <span>الرئيسية</span>
         </Link>
-        <Link href="/stores">
+        <Link href="/stores" aria-current={(location === "/stores" || location.startsWith("/stores/")) ? "page" : undefined}>
           <Tag size={18} />
           <span>المتاجر</span>
         </Link>
@@ -619,11 +640,11 @@ export default function Home() {
           <Search size={22} />
           <span>بحث</span>
         </button>
-        <Link href="/favorites">
+        <Link href="/favorites" aria-current={(location === "/favorites" || location.startsWith("/favorites/")) ? "page" : undefined}>
           <Heart size={18} />
           <span>المفضلة</span>
         </Link>
-        <Link href="/account">
+        <Link href="/account" aria-current={(location === "/account" || location.startsWith("/account/")) ? "page" : undefined}>
           <UserRound size={18} />
           <span>حسابي</span>
         </Link>

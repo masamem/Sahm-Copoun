@@ -1,5 +1,10 @@
+/* سوق الضوء: clear coupon actions, RTL-first, Coponya palette. */
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   Heart,
+  Copy,
+  Check,
   ShieldCheck,
   BadgeCheck,
   Zap,
@@ -18,6 +23,17 @@ export function CouponCard({
   favorite: boolean;
   onFavorite: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(coupon.code);
+      setCopied(true);
+      toast.success("تم نسخ الكود التجريبي");
+    } catch {
+      toast.error("تعذر النسخ. افتح التفاصيل لنسخ الكود يدوياً.");
+      onReveal(coupon);
+    }
+  };
   return (
     <article className={`coupon-card coupon-card--${coupon.tone}`}>
       <div className="verified-rail">
@@ -61,7 +77,7 @@ export function CouponCard({
       </div>
       <div className="code-strip">
         <span className="code-label">كود الخصم</span>
-        <strong>{coupon.code}</strong>
+        <strong dir="ltr">{coupon.code}</strong>
         <span className="code-dots" />
       </div>
       <div className="coupon-card__bottom">
@@ -75,9 +91,10 @@ export function CouponCard({
         </div>
         <button
           className="button button--primary button--small"
-          onClick={() => onReveal(coupon)}
+          onClick={copyCode}
+          aria-label={`نسخ كود ${coupon.store}: ${coupon.code}`}
         >
-          عرض الكود <ArrowLeft size={16} />
+          {copied ? <>تم النسخ <Check size={16} /></> : <>نسخ الكود <Copy size={16} /></>}
         </button>
       </div>
       <button className="terms-link" onClick={() => onReveal(coupon)}>
