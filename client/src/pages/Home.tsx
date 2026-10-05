@@ -618,6 +618,7 @@ export default function Home() {
             <Link href="/faq">الأسئلة الشائعة</Link>
             <Link href="/how-it-works">طريقة استخدام الكوبونات</Link>
             <Link href="/report">الإبلاغ عن كوبون</Link>
+            <Link href="/admin">لوحة الإدارة</Link>
           </div>
         </div>
         <div className="container footer-bottom">
