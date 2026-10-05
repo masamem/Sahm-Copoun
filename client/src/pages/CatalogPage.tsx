@@ -11,6 +11,7 @@ import {
   saveLocal,
 } from "@/lib/catalog";
 import { CouponCard } from "@/components/CouponCard";
+import { StoreOverview, StoreArticle } from "@/components/StoreProfile";
 import SubmitCoupon from "@/components/SubmitCoupon";
 
 const pages: Record<string, [string, string]> = {
@@ -251,10 +252,10 @@ export default function CatalogPage({
   useEffect(() => {
     document.title = `${info?.[0] || "الصفحة غير موجودة"} — Coponya · كوبونيا`;
     document.querySelector('meta[name="description"]')?.setAttribute("content",
-      store ? `تصفح كوبونات ${store.name} على كوبونيا، واقرأ التفاصيل وانسخ الكود. ${isLive ? "" : "العروض الحالية تجريبية."}`
-        : `${info?.[0] || "كوبونيا"}: ${info?.[1] || "تصفح المتاجر والكوبونات والعروض."}`
+      store?.summary || (store ? `تصفح كوبونات ${store.name} على كوبونيا، واقرأ التفاصيل وانسخ الكود. ${isLive ? "" : "العروض الحالية تجريبية."}`
+        : `${info?.[0] || "كوبونيا"}: ${info?.[1] || "تصفح المتاجر والكوبونات والعروض."}`)
     );
-  }, [location, isLive, store?.name]);
+  }, [location, isLive, store?.name, store?.summary]);
   const isCoupons =
     ["/coupons", "/favorites"].includes(location) ||
     !!store ||
@@ -278,13 +279,13 @@ export default function CatalogPage({
         <span>/</span>
         <span>{info?.[0] || "الصفحة غير موجودة"}</span>
       </nav>
-      <div className="page-heading">
+      {store ? <StoreOverview store={store} couponCount={coupons.filter(c=>c.store===store.name).length}/> : <div className="page-heading">
         <span className="eyebrow">كوبونيا · أوفر لك، أسرع لك</span>
         <h1>{info?.[0] || "الصفحة غير موجودة"}</h1>
         <p>
           {info?.[1] || "ربما تغير الرابط. عد إلى الرئيسية أو تصفح الكوبونات."}
         </p>
-      </div>
+      </div>}
       {!info && (
         <Link href="/" className="button button--primary">
           العودة للرئيسية
@@ -292,6 +293,7 @@ export default function CatalogPage({
       )}
       {isCoupons && (
         <>
+          {store&&<h2 id="store-coupons" className="store-section-title">كوبونات {store.name}</h2>}
           <div className="catalog-toolbar">
             <label className="catalog-search">
               <Search size={20} />
@@ -368,6 +370,7 @@ export default function CatalogPage({
           )}
         </>
       )}
+      {store&&<StoreArticle store={store} related={stores.filter(s=>s.name!==store.name).slice(0,4)}/>}
       {location === "/stores" && (
         <>
           <label className="catalog-search">

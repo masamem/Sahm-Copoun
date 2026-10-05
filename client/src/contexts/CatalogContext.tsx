@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import type { Store } from "@/lib/catalog";
 import * as demo from "@/lib/data";
 import { backendConfigured, backendRequest, type CouponRecord, type StoreRecord } from "@/lib/backend";
 import { mapCatalog } from "@/lib/liveCatalog";
-type Catalog = { stores: typeof demo.stores; coupons: typeof demo.coupons; categories: typeof demo.categories; deals: typeof demo.deals; isLive: boolean; loading: boolean; error: string; reload: () => void };
+type Catalog = { stores: Store[]; coupons: typeof demo.coupons; categories: typeof demo.categories; deals: typeof demo.deals; isLive: boolean; loading: boolean; error: string; reload: () => void };
 const Context = createContext<Catalog | null>(null);
 export function CatalogProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState({ stores: backendConfigured ? [] : demo.stores, coupons: backendConfigured ? [] : demo.coupons });
+  const [data, setData] = useState<{ stores: Store[]; coupons: typeof demo.coupons }>({ stores: backendConfigured ? [] : demo.stores, coupons: backendConfigured ? [] : demo.coupons });
   const [loading, setLoading] = useState(backendConfigured);
   const [error, setError] = useState("");
   const [revision, setRevision] = useState(0);

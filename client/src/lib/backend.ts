@@ -1,7 +1,7 @@
 export const backendUrl = (import.meta.env.VITE_SUPABASE_URL || "").replace(/\/$/, "");
 const publicKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "";
 export const backendConfigured = Boolean(backendUrl && publicKey);
-export type StoreRecord = { id: string; name: string; initial: string; tone: string; website_url: string; active: boolean };
+export type StoreRecord = { id: string; name: string; initial: string; tone: string; website_url: string; active: boolean; summary?: string; about?: string; products?: string; shipping?: string; payment?: string; returns_policy?: string; faq?: string; logo_url?: string };
 export type CouponRecord = { id: string; store_id: string; title: string; description: string; discount: string; code: string; category: string; terms: string; expires_at: string | null; published: boolean; verified_at: string | null };
 export class BackendError extends Error { constructor(message: string, public status: number) { super(message); } }
 export async function backendRequest<T>(path: string, options: { method?: string; body?: unknown; token?: string; signal?: AbortSignal } = {}): Promise<T> {

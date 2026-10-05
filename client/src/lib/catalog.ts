@@ -1,3 +1,4 @@
+export type Store = { name: string; initial: string; tone: string; discount: string; count: string; websiteUrl?: string; summary?: string; about?: string; products?: string; shipping?: string; payment?: string; returnsPolicy?: string; faq?: string; logoUrl?: string };
 export type Coupon = {
   isDemo?: boolean;
   websiteUrl?: string;

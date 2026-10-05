@@ -12,6 +12,11 @@ describe("public catalog",()=>{
     const result=mapCatalog([store],[coupon,{...coupon,id:"2",code:"OPEN",expires_at:null}],"2026-10-05");
     expect(result.coupons).toHaveLength(2);expect(result.coupons[0]).toMatchObject({isDemo:false,terms:coupon.terms,websiteUrl:store.website_url,verifiedAt:null});
   });
+  it("preserves store profile content and keeps older stores compatible",()=>{
+    const profile=mapCatalog([{...store,summary:"نبذة",about:"تفاصيل",products:"منتجات",shipping:"شحن",payment:"دفع",returns_policy:"استرجاع",faq:"سؤال\nإجابة",logo_url:"https://example.com/logo.png"}],[],"2026-10-05").stores[0];
+    expect(profile).toMatchObject({summary:"نبذة",about:"تفاصيل",returnsPolicy:"استرجاع",faq:"سؤال\nإجابة",websiteUrl:store.website_url,logoUrl:"https://example.com/logo.png"});
+    expect(mapCatalog([store],[],"2026-10-05").stores[0].about).toBe("");
+  });
   it("does not substitute demo data for an empty real catalog",()=>expect(mapCatalog([],[],"2026-10-05")).toEqual({stores:[],coupons:[]}));
   it("calculates advertised discounts only from eligible coupons",()=>expect(mapCatalog([store],[coupon,{...coupon,discount:"90%",published:false}],"2026-10-05").stores[0].discount).toBe("20%"));
 });

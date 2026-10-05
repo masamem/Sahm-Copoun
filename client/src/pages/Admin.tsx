@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import { BackendError, backendConfigured, backendRequest, type StoreRecord, type CouponRecord } from "@/lib/backend";
 import { categories } from "@/lib/data";
 import { useCatalog } from "@/contexts/CatalogContext";
-const blankStore = { id: "", name: "", initial: "", tone: "olive", website_url: "", active: false };
+const blankStore = { id: "", name: "", initial: "", tone: "olive", website_url: "", active: false, summary: "", about: "", products: "", shipping: "", payment: "", returns_policy: "", faq: "", logo_url: "" };
 const blankCoupon = { id: "", store_id: "", title: "", description: "", discount: "10%", code: "", category: categories[0][0], terms: "", expires_at: "", published: false, verified_at: null as string | null };
 export default function Admin() {
   const { reload } = useCatalog();
@@ -35,16 +35,23 @@ export default function Admin() {
       <div className="admin-toolbar"><button className="button button--outline" aria-pressed={tab==="stores"} onClick={()=>setTab("stores")}>المتاجر ({stores.length})</button><button className="button button--outline" aria-pressed={tab==="coupons"} onClick={()=>setTab("coupons")}>الكوبونات ({coupons.length})</button><button disabled={busy} className="button button--outline" onClick={()=>void run(async()=>{try { await backendRequest("/auth/v1/logout",{method:"POST",token}); } finally { setToken("");setStores([]);setCoupons([]); }})}>تسجيل الخروج</button></div>
       <div className="admin-layout">
       {tab==="stores" ? <>
-        <form className="content-panel support-form" onSubmit={e=>{e.preventDefault();void run(async()=>{ const {id,...body}=store; const url = new URL(body.website_url); if(url.protocol!=="https:" || url.username || url.password) throw new Error("استخدم رابط متجر آمن يبدأ بـ https:// بدون بيانات دخول."); await backendRequest(`/rest/v1/stores${id?`?id=eq.${id}`:""}`,{method:id?"PATCH":"POST",token,body});setStore(blankStore);await load(token);setNotice("تم حفظ المتجر.");});}}>
+        <form className="content-panel support-form" onSubmit={e=>{e.preventDefault();void run(async()=>{ const {id,...body}=store; const url = new URL(body.website_url); if(url.protocol!=="https:" || url.username || url.password) throw new Error("استخدم رابط متجر آمن يبدأ بـ https:// بدون بيانات دخول."); if(body.logo_url) { const logo = new URL(body.logo_url); if(logo.protocol!=="https:" || logo.username || logo.password) throw new Error("استخدم رابط شعار يبدأ بـ https:// بدون بيانات دخول."); } await backendRequest(`/rest/v1/stores${id?`?id=eq.${id}`:""}`,{method:id?"PATCH":"POST",token,body});setStore(blankStore);await load(token);setNotice("تم حفظ المتجر.");});}}>
           <h2>{store.id?"تعديل المتجر":"متجر جديد"}</h2>
           <label>اسم المتجر<input value={store.name} required maxLength={120} onChange={e=>setStore({...store,name:e.target.value})}/></label>
           <label>الحرف المختصر<input value={store.initial} required maxLength={3} onChange={e=>setStore({...store,initial:e.target.value})}/></label>
           <label>رابط المتجر<input value={store.website_url} type="url" dir="ltr" required pattern="https://.*" onChange={e=>setStore({...store,website_url:e.target.value})}/></label>
           <label>لون البطاقة<select value={store.tone} onChange={e=>setStore({...store,tone:e.target.value})}>{["olive","apricot","ink","mint","sand"].map(t=><option key={t}>{t}</option>)}</select></label>
+          <fieldset className="store-editor"><legend>الصفحة التعريفية للمتجر</legend>
+            <p>أضف معلومات مؤكدة من المتجر. الحقول الفارغة لا تظهر للزوار. افصل الفقرات بسطر فارغ.</p>
+            <label>رابط شعار المتجر (اختياري)<input type="url" dir="ltr" pattern="https://.*" maxLength={2048} value={store.logo_url} onChange={e=>setStore({...store,logo_url:e.target.value})}/></label>
+            <label>نبذة مختصرة<textarea rows={3} maxLength={300} value={store.summary} onChange={e=>setStore({...store,summary:e.target.value})}/><small>{store.summary.length}/300</small></label>
+            {([['about','نبذة عن المتجر'],['products','المنتجات والأقسام'],['shipping','الشحن والتوصيل'],['payment','طرق الدفع'],['returns_policy','الاستبدال والاسترجاع'],['faq','الأسئلة الشائعة']] as const).map(([key,label])=><label key={key}>{label}<textarea rows={key==='about'?6:4} maxLength={key==='about'?12000:4000} value={store[key]} onChange={e=>setStore({...store,[key]:e.target.value})}/>{key==='faq'&&<small>اكتب السؤال في أول سطر والإجابة تحته. افصل كل سؤال وإجابته عن التالي بسطر فارغ.</small>}</label>)}
+            {store.name&&<Link className="text-link" href={`/stores/${encodeURIComponent(store.name)}`} target="_blank">عرض صفحة المتجر بعد الحفظ</Link>}
+          </fieldset>
           <label className="admin-checkbox"><input type="checkbox" checked={store.active} onChange={e=>setStore({...store,active:e.target.checked})}/>إظهار المتجر للزوار</label>
           <button disabled={busy} className="button button--primary">حفظ المتجر</button><button type="button" className="text-link" onClick={()=>setStore(blankStore)}>إلغاء التعديل</button>
         </form>
-        <div className="admin-list">{!stores.length&&<p>لا توجد متاجر بعد. أضف أول متجر.</p>}{stores.map(s=><article className="content-panel" key={s.id}><h2>{s.name}</h2><p>{s.active?"ظاهر للزوار":"مخفي"}</p><button className="button button--outline" onClick={()=>setStore(s)}>تعديل</button></article>)}</div>
+        <div className="admin-list">{!stores.length&&<p>لا توجد متاجر بعد. أضف أول متجر.</p>}{stores.map(s=><article className="content-panel" key={s.id}><h2>{s.name}</h2><p>{s.active?"ظاهر للزوار":"مخفي"}</p><button className="button button--outline" onClick={()=>setStore({...blankStore,...s,summary:s.summary||"",about:s.about||"",products:s.products||"",shipping:s.shipping||"",payment:s.payment||"",returns_policy:s.returns_policy||"",faq:s.faq||"",logo_url:s.logo_url||""})}>تعديل</button></article>)}</div>
       </> : <>
         <form className="content-panel support-form" onSubmit={e=>{e.preventDefault();void run(async()=>{const {id,...values}=coupon;if(!stores.some(s=>s.id===values.store_id)) throw new Error("اختر متجراً أولاً."); if(!/^(100|\d{1,2})(\.\d{1,2})?%$/.test(values.discount)||parseFloat(values.discount)>100) throw new Error("أدخل نسبة صحيحة بين 0% و100%."); const body={...values,expires_at:values.expires_at||null}; await backendRequest(`/rest/v1/coupons${id?`?id=eq.${id}`:""}`,{method:id?"PATCH":"POST",token,body});setCoupon(blankCoupon);await load(token);setNotice("تم حفظ الكوبون.");});}}>
           <h2>{coupon.id?"تعديل الكوبون":"كوبون جديد"}</h2>
