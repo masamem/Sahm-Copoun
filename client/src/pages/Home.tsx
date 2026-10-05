@@ -34,7 +34,7 @@ import {
   Zap,
 } from "lucide-react";
 
-const logoUrl = "/brand/coponya-logo-v3.svg";
+const logoUrl = "/brand/coponya-logo-v4.svg";
 const heroUrl =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663890167905/YhatHEeNFLBL9m3u6y3Nwp/sahm-hero-fixpfM4RqYnrUecg2f4VDV.webp";
 const spotlightUrl =
