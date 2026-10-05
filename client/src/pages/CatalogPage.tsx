@@ -1,3 +1,4 @@
+import { RiyalAmount } from "@/components/RiyalAmount";
 /* سوق الضوء: searchable store pages and readable Arabic metadata. */
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
@@ -440,8 +441,8 @@ export default function CatalogPage({
                   {d.title} {d.discount}
                 </h2>
                 <div className="price-row">
-                  <strong>{d.newPrice}</strong>
-                  <del>{d.oldPrice}</del>
+                  <strong><RiyalAmount value={d.newPrice} /></strong>
+                  <del><RiyalAmount value={d.oldPrice} /></del>
                 </div>
                 <Link
                   className="button button--outline"

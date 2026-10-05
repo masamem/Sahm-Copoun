@@ -1,3 +1,4 @@
+import { RiyalAmount } from "@/components/RiyalAmount";
 /* سوق الضوء: Arabic editorial commerce, Coponya Olive + apricot, verification-led hierarchy, RTL-first. */
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
@@ -351,7 +352,7 @@ export default function Home() {
                   </div>
                   <div className="floating-save">
                     <span>توفير تجريبي</span>
-                    <strong>186 ر.س</strong>
+                    <strong><RiyalAmount value={186} /></strong>
                     <small>مثال توضيحي</small>
                   </div>
                 </div>
@@ -512,8 +513,8 @@ export default function Home() {
                           {deal.title} <b>{deal.discount}</b>
                         </h3>
                         <div className="price-row">
-                          <strong>{deal.newPrice}</strong>
-                          <del>{deal.oldPrice}</del>
+                          <strong><RiyalAmount value={deal.newPrice} /></strong>
+                          <del><RiyalAmount value={deal.oldPrice} /></del>
                         </div>
                         <button
                           className="button button--outline button--small"

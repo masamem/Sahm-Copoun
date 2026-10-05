@@ -221,3 +221,7 @@ h1,h2,h3,h4,h5,h6 { letter-spacing:normal; }
  .step p { font-size:12px; line-height:1.8; }
  .footer-bottom { flex-wrap:wrap; font-size:12px; line-height:1.8; }
 }
+
+/* Saudi Riyal symbol: preserve proportions and place to the left of the amount. */
+.riyal-amount { display:inline-flex; align-items:center; gap:.3em; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.riyal-symbol { display:inline-block; width:.895em; height:1em; flex-shrink:0; background:currentColor; mask:url('/brand/saudi-riyal.svg') center / contain no-repeat; -webkit-mask:url('/brand/saudi-riyal.svg') center / contain no-repeat; }
