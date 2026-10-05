@@ -28,7 +28,7 @@ export function CouponCard({
     try {
       await navigator.clipboard.writeText(coupon.code);
       setCopied(true);
-      toast.success("تم نسخ الكود التجريبي");
+      toast.success(coupon.isDemo === false ? "تم نسخ الكود" : "تم نسخ الكود التجريبي");
     } catch {
       toast.error("تعذر النسخ. افتح التفاصيل لنسخ الكود يدوياً.");
       onReveal(coupon);
@@ -37,7 +37,7 @@ export function CouponCard({
   return (
     <article className={`coupon-card coupon-card--${coupon.tone}`}>
       <div className="verified-rail">
-        <span>كوبون تجريبي</span>
+        <span>{coupon.isDemo === false ? "كوبون خصم" : "كوبون تجريبي"}</span>
         <ShieldCheck size={15} />
       </div>
       <div className="coupon-card__top">
@@ -51,7 +51,7 @@ export function CouponCard({
           <div>
             <strong>{coupon.store}</strong>
             <span>
-              <BadgeCheck size={14} /> عرض تجريبي
+              <BadgeCheck size={14} /> {coupon.isDemo === false ? (coupon.verifiedAt ? "تمت المراجعة" : "كوبون خصم") : "عرض تجريبي"}
             </span>
           </div>
         </div>
@@ -83,7 +83,7 @@ export function CouponCard({
       <div className="coupon-card__bottom">
         <div className="coupon-meta">
           <span>
-            <ShieldCheck size={14} /> مثال توضيحي
+            <ShieldCheck size={14} /> {coupon.isDemo === false ? (coupon.expiresAt ? `حتى ${coupon.expiresAt}` : "راجع الشروط") : "مثال توضيحي"}
           </span>
           <span>
             <Zap size={14} /> تفاصيل الكوبون

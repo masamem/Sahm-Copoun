@@ -3,7 +3,7 @@ import { RiyalAmount } from "@/components/RiyalAmount";
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ArrowLeft, Search, Heart, SlidersHorizontal } from "lucide-react";
-import { coupons, stores, categories, deals } from "@/lib/data";
+import { useCatalog } from "@/contexts/CatalogContext";
 import {
   type Coupon,
   matchesSearch,
@@ -218,6 +218,7 @@ export default function CatalogPage({
   onFavorite: (code: string) => void;
   onReveal: (coupon: Coupon) => void;
 }) {
+  const { coupons, stores, categories, deals, isLive } = useCatalog();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("default");
@@ -238,18 +239,22 @@ export default function CatalogPage({
   const categoryDetail = location.startsWith("/categories/")
     ? categories.find((c) => c[0] === detail)
     : undefined;
+  const livePages: Record<string, [string,string]> = {
+    "/deals": ["العروض", "العروض المباشرة ستظهر عند إضافتها."],
+    "/privacy": ["سياسة الخصوصية", "معلومات عن البيانات والخدمات المستخدمة."],
+  };
   const info = store
-    ? [store.name, "الكوبونات والعروض المتاحة لهذا المتجر التجريبي."]
+    ? [store.name, isLive ? "الكوبونات المتاحة لهذا المتجر وشروط استخدامها." : "الكوبونات والعروض المتاحة لهذا المتجر التجريبي."]
     : categoryDetail
       ? [categoryDetail[0], "تصفح الكوبونات المتاحة في هذا التصنيف."]
-      : pages[location];
+      : (isLive && livePages[location]) || pages[location];
   useEffect(() => {
     document.title = `${info?.[0] || "الصفحة غير موجودة"} — Coponya · كوبونيا`;
     document.querySelector('meta[name="description"]')?.setAttribute("content",
-      store ? `تصفح كوبونات ${store.name} على كوبونيا، واقرأ التفاصيل وانسخ الكود. العروض الحالية تجريبية.`
+      store ? `تصفح كوبونات ${store.name} على كوبونيا، واقرأ التفاصيل وانسخ الكود. ${isLive ? "" : "العروض الحالية تجريبية."}`
         : `${info?.[0] || "كوبونيا"}: ${info?.[1] || "تصفح المتاجر والكوبونات والعروض."}`
     );
-  }, [location]);
+  }, [location, isLive, store?.name]);
   const isCoupons =
     ["/coupons", "/favorites"].includes(location) ||
     !!store ||
@@ -430,6 +435,7 @@ export default function CatalogPage({
       )}
       {location === "/deals" && (
         <div className="deal-grid">
+          {!deals.length && <p>لا توجد عروض مباشرة متاحة حالياً.</p>}
           {deals.map((d) => (
             <article className={`deal-card deal-card--${d.tone}`} key={d.brand}>
               <div className="deal-art">
@@ -462,7 +468,12 @@ export default function CatalogPage({
       )}
       {location === "/faq" && (
         <div className="faq-list">
-          {faqs.map(([question, answer]) => (
+          {(isLive ? [
+            ["كيف أنسخ الكود؟", "اضغط نسخ الكود من البطاقة. اقرأ الشروط قبل استخدامه، وتحقق من الخصم عند الدفع."],
+            ["كيف تتم مراجعة الأكواد؟", "تظهر علامة المراجعة فقط عندما يحدد فريق الإدارة أنه راجع الكود. صلاحية الخصم النهائية تعتمد على شروط المتجر."],
+            ["أين تحفظ المفضلة؟", "تحفظ على هذا المتصفح والجهاز، وقد تختفي عند حذف بيانات الموقع."],
+            ["هل أحتاج إلى حساب؟", "لا تحتاج إلى حساب للتصفح أو النسخ. تسجيل الدخول مخصص للإدارة حالياً."],
+          ] : faqs).map(([question, answer]) => (
             <details key={question}>
               <summary>{question}</summary>
               <p>{answer}</p>
@@ -488,7 +499,7 @@ export default function CatalogPage({
               <h2>تحقق من العرض عند الدفع</h2>
               <p>
                 في العروض الحقيقية، أدخل الكود لدى المتجر وتأكد من ظهور الخصم
-                قبل الدفع. الأكواد الحالية تجريبية.
+                قبل الدفع. {!isLive && "الأكواد الحالية تجريبية."}
               </p>
             </li>
           </ol>
@@ -505,8 +516,7 @@ export default function CatalogPage({
             اهتماماتك، وحفظ اختياراتك المفضلة.
           </p>
           <p>
-            هذه نسخة تجريبية قابلة للتطوير. بيانات المتاجر والأكواد أمثلة
-            توضيحية، ولم يتم ربط مصدر عروض مباشر بعد.
+            {isLive ? "ينشر فريق الإدارة الكوبونات وشروطها. تحقق من الخصم النهائي لدى المتجر قبل الدفع." : "هذه نسخة تجريبية. بيانات المتاجر والأكواد أمثلة توضيحية ولم يتم ربط قاعدة البيانات بعد."}
           </p>
           <Link href="/coupons" className="button button--primary">
             ابدأ التصفح <ArrowLeft size={16} />
@@ -527,6 +537,7 @@ export default function CatalogPage({
             تحميل الخط وبعض الصور من خدمات خارجية، وقد تستقبل هذه الخدمات عنوان
             الشبكة ومعلومات المتصفح عند تحميل الملفات.
           </p>
+          {isLive && <><h2>قاعدة البيانات والإدارة</h2><p>تُحمّل بيانات المتاجر والكوبونات من Supabase. تسجيل دخول الإدارة يُعالج بواسطة Supabase Auth، والجلسة محفوظة مؤقتاً في ذاكرة الصفحة. لا تُحفظ كلمة المرور محلياً.</p></>}
           <h2>قبل الإطلاق</h2>
           <p>
             تحتاج هذه السياسة إلى تحديث عند ربط خدمات البريد أو الحسابات أو
@@ -538,8 +549,7 @@ export default function CatalogPage({
         <div className="content-panel">
           <h2>طبيعة هذه النسخة</h2>
           <p>
-            الموقع عرض تجريبي. المتاجر والأكواد والأسعار الحالية أمثلة، ولا تمثل
-            وعداً بخصم أو اتفاقاً مع متجر.
+            {isLive ? "يعرض الموقع الكوبونات التي ينشرها فريق الإدارة. تسري شروط المتجر ولا يضمن الموقع قبول الكود لكل طلب." : "الموقع عرض تجريبي. المتاجر والأكواد والأسعار الحالية أمثلة، ولا تمثل وعداً بخصم أو اتفاقاً مع متجر."}
           </p>
           <h2>استخدام العروض</h2>
           <p>
@@ -556,3 +566,4 @@ export default function CatalogPage({
     </section>
   );
 }
+

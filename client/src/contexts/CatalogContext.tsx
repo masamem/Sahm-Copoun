@@ -1,0 +1,25 @@
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import * as demo from "@/lib/data";
+import { backendConfigured, backendRequest, type CouponRecord, type StoreRecord } from "@/lib/backend";
+import { mapCatalog } from "@/lib/liveCatalog";
+type Catalog = { stores: typeof demo.stores; coupons: typeof demo.coupons; categories: typeof demo.categories; deals: typeof demo.deals; isLive: boolean; loading: boolean; error: string; reload: () => void };
+const Context = createContext<Catalog | null>(null);
+export function CatalogProvider({ children }: { children: ReactNode }) {
+  const [data, setData] = useState({ stores: backendConfigured ? [] : demo.stores, coupons: backendConfigured ? [] : demo.coupons });
+  const [loading, setLoading] = useState(backendConfigured);
+  const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
+  useEffect(() => {
+    if (!backendConfigured) return;
+    const controller = new AbortController(); setLoading(true); setError("");
+    Promise.all([
+      backendRequest<StoreRecord[]>("/rest/v1/stores?select=*&active=eq.true&order=name", { signal: controller.signal }),
+      backendRequest<CouponRecord[]>("/rest/v1/coupons?select=*&published=eq.true&order=created_at.desc", { signal: controller.signal }),
+    ]).then(([stores, coupons]) => { if (!controller.signal.aborted) setData(mapCatalog(stores, coupons)); })
+      .catch(() => { if (!controller.signal.aborted) { setData({ stores: [], coupons: [] }); setError("تعذر تحميل الكوبونات. حاول مجدداً."); } })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
+  }, [revision]);
+  return <Context.Provider value={{ ...data, categories: demo.categories, deals: backendConfigured ? [] : demo.deals, isLive: backendConfigured, loading, error, reload: () => setRevision(v => v + 1) }}>{children}</Context.Provider>;
+}
+export function useCatalog() { const value = useContext(Context); if (!value) throw new Error("Missing CatalogProvider"); return value; }
