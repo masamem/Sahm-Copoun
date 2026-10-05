@@ -1,3 +1,4 @@
+import { StoreLogo } from "@/components/StoreLogo";
 import { RiyalAmount } from "@/components/RiyalAmount";
 /* سوق الضوء: Arabic editorial commerce, Coponya Olive + apricot, verification-led hierarchy, RTL-first. */
 import { useEffect, useMemo, useState } from "react";
@@ -60,20 +61,6 @@ function BrandMark({ compact = false }: { compact?: boolean }) {
         </span>
       )}
     </Link>
-  );
-}
-
-function StoreLogo({
-  initial,
-  tone = "olive",
-}: {
-  initial: string;
-  tone?: string;
-}) {
-  return (
-    <span className={`store-logo store-logo--${tone}`} aria-hidden="true">
-      {initial}
-    </span>
   );
 }
 
@@ -399,6 +386,7 @@ export default function Home() {
                         <div className="store-visual">
                           <StoreLogo
                             initial={store.initial}
+                            logoUrl={store.logoUrl}
                             tone={store.tone}
                           />
                           <span className="store-mini-badge">
@@ -672,6 +660,7 @@ export default function Home() {
               </Dialog.Close>
               <StoreLogo
                 initial={modalCoupon.initial}
+                logoUrl={modalCoupon.logoUrl}
                 tone={modalCoupon.tone}
               />
               <span className="modal-verified">{modalCoupon.isDemo === false ? (modalCoupon.verifiedAt ? "تمت المراجعة" : "كوبون خصم") : "كوبون تجريبي"}</span>
@@ -725,4 +714,3 @@ export default function Home() {
 function ShoppingBagIcon() {
   return <span className="custom-step-icon">⌂</span>;
 }
-

@@ -1,3 +1,4 @@
+import { StoreLogo } from "@/components/StoreLogo";
 import { RiyalAmount } from "@/components/RiyalAmount";
 /* سوق الضوء: searchable store pages and readable Arabic metadata. */
 import { useEffect, useState } from "react";
@@ -393,9 +394,7 @@ export default function CatalogPage({
                   key={s.name}
                   className="store-card"
                 >
-                  <span className={`store-logo store-logo--${s.tone}`}>
-                    {s.initial}
-                  </span>
+                  <StoreLogo initial={s.initial} tone={s.tone} logoUrl={s.logoUrl}/>
                   <strong>{s.name}</strong>
                   <span>
                     {coupons.filter((c) => c.store === s.name).length} كوبون

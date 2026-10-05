@@ -1,3 +1,4 @@
+import { StoreLogo } from "@/components/StoreLogo";
 /* سوق الضوء: clear coupon actions, RTL-first, Coponya palette. */
 import { useState } from "react";
 import { toast } from "sonner";
@@ -42,12 +43,7 @@ export function CouponCard({
       </div>
       <div className="coupon-card__top">
         <div className="coupon-store">
-          <span
-            className={`store-logo store-logo--${coupon.tone}`}
-            aria-hidden="true"
-          >
-            {coupon.initial}
-          </span>
+          <StoreLogo initial={coupon.initial} tone={coupon.tone} logoUrl={coupon.logoUrl}/>
           <div>
             <strong>{coupon.store}</strong>
             <span>
