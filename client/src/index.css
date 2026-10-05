@@ -182,3 +182,42 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
  .site-footer { padding-bottom:calc(90px + env(safe-area-inset-bottom)); }
  .hero-search input { font-size:16px; }
 }
+
+/* سوق الضوء: comfortable Arabic reading, clear hierarchy, and natural glyph spacing. */
+body { font-size:16px; line-height:1.7; }
+h1,h2,h3,h4,h5,h6 { letter-spacing:normal; }
+.hero-copy h1 { letter-spacing:normal; line-height:1.4; }
+.section-heading h2,.page-heading h1 { letter-spacing:normal; line-height:1.5; font-weight:700; }
+.coupon-card__main h3 { letter-spacing:normal; line-height:1.6; font-size:18px; }
+.eyebrow { letter-spacing:normal; line-height:1.6; }
+.button,.hero-search button,.main-nav,.coupon-store strong { font-weight:600; }
+.coupon-store strong { font-size:15px; line-height:1.6; }
+.coupon-card__main p { max-width:none; font-size:14px; line-height:1.8; }
+.coupon-card__main { min-height:unset; padding-block:20px; }
+.coupon-store span,.coupon-meta,.code-label,.discount-pill,.terms-link { font-size:12px; line-height:1.7; }
+.coupon-card__bottom { align-items:center; flex-wrap:wrap; gap:12px; }
+.coupon-card .terms-link { color:var(--muted); min-height:44px; margin-top:8px; }
+.verified-rail { font-size:10px; }
+.code-strip { min-height:56px; height:auto; padding-block:10px; }
+.code-strip strong { font-size:16px; }
+.discount-value small { font-size:12px; }
+.store-card > span,.store-card small,.category-card small { font-size:13px; line-height:1.7; }
+.content-panel p,.page-heading p { font-size:16px; line-height:1.9; }
+.hero-kicker,.hero-stats span,.hero-search button,.header-search-button,.step p,.footer-bottom { font-size:13px; line-height:1.7; }
+@media(max-width:700px) {
+ .hero-copy h1 { font-size:clamp(30px,8.5vw,40px); line-height:1.4; }
+ .hero-copy > p,.coupon-intro p { font-size:15px; line-height:1.8; }
+ .section-heading h2 { font-size:25px; line-height:1.5; }
+ .text-link,.hero-stats span,.store-card small,.category-card small,.coupon-meta { font-size:12px; }
+ .hero-search { height:auto; min-height:60px; flex-wrap:wrap; gap:6px; }
+ .hero-search input { font-size:16px; min-height:44px; }
+ .hero-search button { min-height:44px; height:auto; padding:10px 12px; font-size:12px; }
+ .coupon-card__main p { font-size:14px; }
+ .coupon-card__main { gap:10px; }
+ .coupon-card__main > div:first-child { min-width:0; }
+ .coupon-store span,.code-label,.discount-pill,.terms-link { font-size:12px; }
+ .mobile-bottom-nav a,.mobile-bottom-nav button { font-size:11px; line-height:1.5; }
+ .step strong { font-size:14px; line-height:1.7; }
+ .step p { font-size:12px; line-height:1.8; }
+ .footer-bottom { flex-wrap:wrap; font-size:12px; line-height:1.8; }
+}
