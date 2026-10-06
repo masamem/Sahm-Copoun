@@ -585,6 +585,10 @@ export default function Home() {
               كوبونيا يساعدك تجد الكوبون المناسب في الوقت المناسب، لتتسوق بذكاء
               وتوفّر أكثر.
             </p>
+            <nav aria-label="حسابات كوبونيا على التواصل الاجتماعي" className="flex flex-wrap gap-4">
+              <a href="https://www.instagram.com/coponya.sa/" target="_blank" rel="noopener noreferrer" aria-label="كوبونيا على Instagram — يفتح في نافذة جديدة">Instagram <span dir="ltr">@coponya.sa</span></a>
+              <a href="https://www.tiktok.com/@coponya" target="_blank" rel="noopener noreferrer" aria-label="كوبونيا على TikTok — يفتح في نافذة جديدة">TikTok <span dir="ltr">@coponya</span></a>
+            </nav>
           </div>
           <div>
             <h3>عن الموقع</h3>
