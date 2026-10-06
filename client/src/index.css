@@ -279,3 +279,7 @@ textarea:focus-visible { outline:3px solid var(--olive); outline-offset:3px; }
   .coupon-modal { max-height:calc(100dvh - 24px - env(safe-area-inset-bottom)); overflow-y:auto; padding-bottom:calc(22px + env(safe-area-inset-bottom)); }
   .header-search-button,.mobile-menu-button { min-width:44px; min-height:44px; }
 }
+
+
+/* Radix portals render content beside the overlay, outside document flow. */
+.coupon-modal.accessible-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:min(390px,calc(100% - 24px)); }
