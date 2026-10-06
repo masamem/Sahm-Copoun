@@ -1,14 +1,15 @@
+import { applyPageMetadata } from "@/lib/pageMetadata";
 import { StoreLogo } from "@/components/StoreLogo";
 import { RiyalAmount } from "@/components/RiyalAmount";
 /* سوق الضوء: Arabic editorial commerce, Coponya Olive + apricot, verification-led hierarchy, RTL-first. */
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import * as Dialog from "@radix-ui/react-dialog";
 import { toast } from "sonner";
 import CatalogPage from "./CatalogPage";
 import { CouponCard } from "@/components/CouponCard";
 import { useCatalog } from "@/contexts/CatalogContext";
-import Admin from "./Admin";
+const Admin = lazy(() => import("./Admin"));
 import { matchesSearch, readSaved, saveLocal } from "@/lib/catalog";
 import {
   ArrowLeft,
@@ -112,13 +113,11 @@ export default function Home() {
     setModalCoupon(null);
     setQuery("");
     window.scrollTo(0, 0);
-    if (location === "/") {
-      document.querySelector('meta[name="description"]')?.setAttribute("content", "كوبونيا — اكتشف الكوبونات والعروض وتصفح المتاجر واحفظ اختياراتك المفضلة.");
+    if (location === "/" || location === "/admin") {
+      applyPageMetadata(location === "/admin" ? "إدارة كوبونيا" : "Coponya — كوبونيا | كوبونات وعروض السعودية",
+        "كوبونيا — اكتشف الكوبونات والعروض وتصفح المتاجر واحفظ اختياراتك المفضلة.", location,
+        { noindex: location === "/admin" });
     }
-    document.title =
-      location === "/"
-        ? "Coponya — كوبونيا | كوبونات وعروض السعودية"
-        : document.title;
   }, [location]);
   const openCoupon = (coupon: (typeof coupons)[number]) => {
     setCopied(false);
@@ -167,7 +166,7 @@ export default function Home() {
     }
   };
 
-  if (location === "/admin") return <Admin />;
+  if (location === "/admin") return <Suspense fallback={<p className="container" role="status">جارٍ تحميل لوحة الإدارة…</p>}><Admin /></Suspense>;
   return (
     <div dir="rtl" className="app-shell">
       <a className="skip-link" href="#main-content">
@@ -254,7 +253,7 @@ export default function Home() {
       {!isLive && <div className="demo-banner">نسخة تجريبية — المتاجر والأكواد أمثلة للتصفح وليست عروضاً مؤكدة.</div>}
       {loading && <p className="catalog-notice" role="status">جارٍ تحميل المتاجر والكوبونات…</p>}
       {error && <div className="catalog-notice" role="alert">{error} <button onClick={reload} className="text-link">إعادة المحاولة</button></div>}
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         {location !== "/" ? (
           <CatalogPage
             location={location}

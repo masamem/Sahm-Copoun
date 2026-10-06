@@ -1,3 +1,4 @@
+import { parseFaq } from "@/lib/storeSeo";
 import { StoreLogo } from "./StoreLogo";
 import { Link } from "wouter";
 import { ArrowUpLeft, Tag, BookOpen } from "lucide-react";
@@ -9,7 +10,7 @@ function Paragraphs({text}: {text: string}) {
 export function StoreOverview({store,couponCount}: {store: Store; couponCount: number}) {
   return <header className="store-overview">
     <StoreLogo initial={store.initial} tone={store.tone} logoUrl={store.logoUrl} className="store-profile-logo"/>
-    <div className="store-overview-copy"><span className="eyebrow">دليل متاجر كوبونيا</span><h1>{store.name}</h1>
+    <div className="store-overview-copy"><span className="eyebrow">دليل متاجر كوبونيا</span><h1>كوبونات {store.name}</h1>
       <p>{store.summary||`تصفح كوبونات ${store.name} واقرأ شروط العرض قبل استخدامه.`}</p>
       <div className="store-overview-actions"><a href="#store-coupons" className="button button--primary"><Tag size={18}/>الكوبونات المتاحة ({couponCount})</a>{store.websiteUrl&&<a className="button button--outline" href={store.websiteUrl} target="_blank" rel="noopener noreferrer sponsored">زيارة المتجر<ArrowUpLeft size={18}/></a>}{store.about&&<a href="#store-about" className="text-link"><BookOpen size={17}/>عن المتجر</a>}</div>
     </div>
@@ -17,7 +18,7 @@ export function StoreOverview({store,couponCount}: {store: Store; couponCount: n
 }
 export function StoreArticle({store,related}: {store: Store; related: Store[]}) {
   const sections = [{id:"store-about",title:`نبذة عن ${store.name}`,text:store.about},{id:"store-products",title:"المنتجات والأقسام",text:store.products},{id:"store-shipping",title:"الشحن والتوصيل",text:store.shipping},{id:"store-payment",title:"طرق الدفع",text:store.payment},{id:"store-returns",title:"الاستبدال والاسترجاع",text:store.returnsPolicy}].filter(s=>s.text?.trim());
-  const faq = (store.faq||"").trim().split(/\n\s*\n/).filter(Boolean).map(block=>{const [question,...answer]=block.split('\n');return {question,answer:answer.join('\n')};}).filter(f=>f.answer.trim());
+  const faq = parseFaq(store.faq);
   return <div className="store-guide-layout">
     <aside className="store-guide-nav" aria-label="دليل صفحة المتجر"><span className="eyebrow">تعرّف على المتجر</span><h2>دليلك للتسوق</h2><a href="#store-coupons">الكوبونات المتاحة</a>{sections.map(s=><a key={s.id} href={`#${s.id}`}>{s.title}</a>)}<a href="#store-how">طريقة استخدام الكوبون</a>{faq.length>0&&<a href="#store-faq">الأسئلة الشائعة</a>}</aside>
     <article className="store-article" aria-label={`دليل ${store.name}`}>
