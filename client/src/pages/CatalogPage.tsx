@@ -1,3 +1,5 @@
+import { applyPageMetadata } from "@/lib/pageMetadata";
+import { storeMetadata, storeStructuredData } from "@/lib/storeSeo";
 import { StoreLogo } from "@/components/StoreLogo";
 import { RiyalAmount } from "@/components/RiyalAmount";
 /* سوق الضوء: searchable store pages and readable Arabic metadata. */
@@ -251,12 +253,15 @@ export default function CatalogPage({
       ? [categoryDetail[0], "تصفح الكوبونات المتاحة في هذا التصنيف."]
       : (loading && location.startsWith("/stores/") ? ["جارٍ تحميل المتجر", "نحمّل معلومات المتجر وكوبوناته…"] : (isLive && livePages[location]) || pages[location]);
   useEffect(() => {
-    document.title = `${info?.[0] || "الصفحة غير موجودة"} — Coponya · كوبونيا`;
-    document.querySelector('meta[name="description"]')?.setAttribute("content",
-      store?.summary || (store ? `تصفح كوبونات ${store.name} على كوبونيا، واقرأ التفاصيل وانسخ الكود. ${isLive ? "" : "العروض الحالية تجريبية."}`
-        : `${info?.[0] || "كوبونيا"}: ${info?.[1] || "تصفح المتاجر والكوبونات والعروض."}`)
-    );
-  }, [location, isLive, store?.name, store?.summary]);
+    const metadata = store ? storeMetadata(store) : {
+      title: `${info?.[0] || "الصفحة غير موجودة"} — Coponya · كوبونيا`,
+      description: `${info?.[0] || "كوبونيا"}: ${info?.[1] || "تصفح المتاجر والكوبونات والعروض."}`,
+    };
+    applyPageMetadata(metadata.title, metadata.description, location, {
+      noindex: !info || ["/favorites", "/account", "/report", "/submit-coupon"].includes(location) || !!store && !isLive,
+      structuredData: store && isLive ? storeStructuredData(store, window.location.origin) : undefined,
+    });
+  }, [location, isLive, store, info?.[0], info?.[1]]);
   const isCoupons =
     ["/coupons", "/favorites"].includes(location) ||
     !!store ||

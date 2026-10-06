@@ -1,3 +1,4 @@
+import { storeSeoDefaults, storeMetadata } from "@/lib/storeSeo";
 /* سوق الضوء: readable RTL administration with explicit publish controls. */
 import { uploadStoreLogo } from "@/lib/storeLogo";
 import { StoreLogo } from "@/components/StoreLogo";
@@ -7,7 +8,7 @@ import { Link } from "wouter";
 import { BackendError, backendConfigured, backendRequest, type StoreRecord, type CouponRecord } from "@/lib/backend";
 import { categories } from "@/lib/data";
 import { useCatalog } from "@/contexts/CatalogContext";
-const blankStore = { id: "", name: "", initial: "", tone: "olive", website_url: "", active: false, summary: "", about: "", products: "", shipping: "", payment: "", returns_policy: "", faq: "", logo_url: "" };
+const blankStore = { id: "", name: "", initial: "", tone: "olive", website_url: "", active: false, summary: "", about: "", products: "", shipping: "", payment: "", returns_policy: "", faq: "", logo_url: "", seo_title: "", meta_description: "", primary_keyword: "", supporting_keywords: "", long_tail_keywords: "", article_ideas: "" };
 const blankCoupon = { id: "", store_id: "", title: "", description: "", discount: "10%", code: "", category: categories[0][0], terms: "", expires_at: "", published: false, verified_at: null as string | null };
 export default function Admin() {
   const { reload } = useCatalog();
@@ -18,7 +19,7 @@ export default function Admin() {
   const [coupon, setCoupon] = useState(blankCoupon);
   const [tab, setTab] = useState("stores");
   const [preview, setPreview] = useState(false);
-  const profile = {name:store.name||"اسم المتجر",initial:store.initial,tone:store.tone,count:"",discount:"",websiteUrl:store.website_url,summary:store.summary,about:store.about,products:store.products,shipping:store.shipping,payment:store.payment,returnsPolicy:store.returns_policy,faq:store.faq,logoUrl:store.logo_url};
+  const profile = {name:store.name||"اسم المتجر",initial:store.initial,tone:store.tone,count:"",discount:"",websiteUrl:store.website_url,summary:store.summary,about:store.about,products:store.products,shipping:store.shipping,payment:store.payment,returnsPolicy:store.returns_policy,faq:store.faq,logoUrl:store.logo_url,seoTitle:store.seo_title,metaDescription:store.meta_description};
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   async function load(accessToken: string) {
@@ -59,10 +60,26 @@ export default function Admin() {
             {preview&&<div className="store-editor-preview"><StoreOverview store={profile} couponCount={coupons.filter(c=>c.store_id===store.id&&c.published).length}/><StoreArticle store={profile} related={[]}/></div>}
             {store.name&&<Link className="text-link" href={`/stores/${encodeURIComponent(store.name)}`} target="_blank">عرض صفحة المتجر بعد الحفظ</Link>}
           </fieldset>
+          <fieldset className="store-editor"><legend>تحسين ظهور المتجر في البحث</legend>
+            <p>الكلمات المفتاحية خطة تحريرية، ولا تُضاف كحشو إلى الصفحة. أضف معلومات مؤكدة في وصف المتجر والأسئلة الشائعة أعلاه.</p>
+            <button type="button" className="button button--outline" disabled={!store.name.trim()} onClick={()=>{
+              const defaults=storeSeoDefaults(store.name.trim());
+              setStore(current=>({...current,
+                seo_title:current.seo_title||defaults.seoTitle,meta_description:current.meta_description||defaults.metaDescription,
+                primary_keyword:current.primary_keyword||defaults.primaryKeyword,supporting_keywords:current.supporting_keywords||defaults.supportingKeywords,
+                long_tail_keywords:current.long_tail_keywords||defaults.longTailKeywords,article_ideas:current.article_ideas||defaults.articleIdeas,
+                about:current.about||defaults.about,faq:current.faq||defaults.faq}));
+            }}>تعبئة الحقول الفارغة بمقترحات أولية</button>
+            <label>الكلمة المفتاحية الرئيسية<input maxLength={160} value={store.primary_keyword} onChange={e=>setStore({...store,primary_keyword:e.target.value})}/></label>
+            {([['supporting_keywords','الكلمات المساندة'],['long_tail_keywords','عبارات البحث الطويلة'],['article_ideas','اقتراحات مقالات']] as const).map(([key,label])=><label key={key}>{label}<textarea rows={3} maxLength={4000} value={store[key]} onChange={e=>setStore({...store,[key]:e.target.value})}/><small>عبارة واحدة في كل سطر. المقترحات تحتاج مراجعة وليست بيانات حجم بحث.</small></label>)}
+            <label>SEO title<input maxLength={120} value={store.seo_title} placeholder={storeSeoDefaults(store.name||'المتجر').seoTitle} onChange={e=>setStore({...store,seo_title:e.target.value})}/><small>{store.seo_title.length}/120 — استهدف عنواناً واضحاً ومختصراً.</small></label>
+            <label>Meta description<textarea rows={3} maxLength={300} value={store.meta_description} onChange={e=>setStore({...store,meta_description:e.target.value})}/><small>{store.meta_description.length}/300 — اكتب وصفاً طبيعياً دون وعود بخصم غير مؤكد.</small></label>
+            <div className="seo-preview" aria-label="معاينة نتيجة البحث"><small>معاينة تقريبية — قد يغيّر محرك البحث النص</small><p dir="ltr">coponya.com/stores/{encodeURIComponent(store.name)}</p><h3>{storeMetadata(profile).title}</h3><p>{storeMetadata(profile).description}</p></div>
+          </fieldset>
           <label className="admin-checkbox"><input type="checkbox" checked={store.active} onChange={e=>setStore({...store,active:e.target.checked})}/>إظهار المتجر للزوار</label>
           <button disabled={busy} className="button button--primary">حفظ المتجر</button><button type="button" disabled={busy} className="text-link" onClick={()=>setStore(blankStore)}>إلغاء التعديل</button>
         </form>
-        <div className="admin-list">{!stores.length&&<p>لا توجد متاجر بعد. أضف أول متجر.</p>}{stores.map(s=><article className="content-panel" key={s.id}><h2>{s.name}</h2><p>{s.active?"ظاهر للزوار":"مخفي"}</p><button disabled={busy} className="button button--outline" onClick={()=>setStore({...blankStore,...s,summary:s.summary||"",about:s.about||"",products:s.products||"",shipping:s.shipping||"",payment:s.payment||"",returns_policy:s.returns_policy||"",faq:s.faq||"",logo_url:s.logo_url||""})}>تعديل</button></article>)}</div>
+        <div className="admin-list">{!stores.length&&<p>لا توجد متاجر بعد. أضف أول متجر.</p>}{stores.map(s=><article className="content-panel" key={s.id}><h2>{s.name}</h2><p>{s.active?"ظاهر للزوار":"مخفي"}</p><button disabled={busy} className="button button--outline" onClick={()=>setStore({...blankStore,...s,summary:s.summary||"",about:s.about||"",products:s.products||"",shipping:s.shipping||"",payment:s.payment||"",returns_policy:s.returns_policy||"",faq:s.faq||"",logo_url:s.logo_url||"",seo_title:s.seo_title||"",meta_description:s.meta_description||"",primary_keyword:s.primary_keyword||"",supporting_keywords:s.supporting_keywords||"",long_tail_keywords:s.long_tail_keywords||"",article_ideas:s.article_ideas||""})}>تعديل</button></article>)}</div>
       </> : <>
         <form className="content-panel support-form" onSubmit={e=>{e.preventDefault();void run(async()=>{const {id,...values}=coupon;if(!stores.some(s=>s.id===values.store_id)) throw new Error("اختر متجراً أولاً."); if(!/^(100|\d{1,2})(\.\d{1,2})?%$/.test(values.discount)||parseFloat(values.discount)>100) throw new Error("أدخل نسبة صحيحة بين 0% و100%."); const body={...values,expires_at:values.expires_at||null}; await backendRequest(`/rest/v1/coupons${id?`?id=eq.${id}`:""}`,{method:id?"PATCH":"POST",token,body});setCoupon(blankCoupon);await load(token);setNotice("تم حفظ الكوبون.");});}}>
           <h2>{coupon.id?"تعديل الكوبون":"كوبون جديد"}</h2>
