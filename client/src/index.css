@@ -393,3 +393,22 @@ textarea:focus-visible { outline:3px solid var(--olive); outline-offset:3px; }
   .store-ticker__group { min-width:0; }
   .motion-control,.store-ticker__control { display:none; }
 }
+
+/* User-supplied shopping artwork behind the animated hero coupons. */
+.hero-section {
+  background-color:#f5ecdb;
+  background-image:url('/brand/coponya-hero-background.png');
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:left center;
+}
+.hero-motion__glow { display:none; }
+@media(max-width:700px) {
+  .hero-section { background-image:none; }
+  .hero-visual {
+    background-image:url('/brand/coponya-hero-background.png');
+    background-repeat:no-repeat;
+    background-size:auto 100%;
+    background-position:left center;
+  }
+}
