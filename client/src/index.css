@@ -374,11 +374,11 @@ textarea:focus-visible { outline:3px solid var(--olive); outline-offset:3px; }
 @keyframes coponya-float { 0%,100% { transform:translateY(0) rotate(var(--tilt)); } 50% { transform:translateY(-12px) rotate(var(--tilt)); } }
 @keyframes coponya-ticker { to { transform:translateX(-50%); } }
 @media(max-width:700px) {
-  .hero-motion { height:265px; max-width:420px; margin:0 auto; width:100%; }
+  .hero-motion { height:350px; max-width:420px; margin:0 auto; width:100%; }
   .hero-ticket { width:140px; padding:11px; border-radius:12px; }
   .hero-ticket--0 { top:14px; right:3%; }
-  .hero-ticket--1 { top:82px; left:3%; }
-  .hero-ticket--2 { bottom:28px; right:12%; }
+  .hero-ticket--1 { top:110px; left:3%; }
+  .hero-ticket--2 { bottom:30px; right:3%; }
   .hero-ticket strong { font-size:19px; }
   .hero-ticket__store { font-size:10px; max-width:72px; }
   .hero-ticket__code { font-size:9px; margin-top:8px; padding:5px; }
