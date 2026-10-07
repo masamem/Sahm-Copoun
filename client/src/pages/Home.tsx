@@ -1,3 +1,4 @@
+import { HeroCoupons, StoreTicker } from "@/components/HomeMotion";
 import { applyPageMetadata } from "@/lib/pageMetadata";
 import { StoreLogo } from "@/components/StoreLogo";
 import { RiyalAmount } from "@/components/RiyalAmount";
@@ -38,8 +39,6 @@ import {
 } from "lucide-react";
 
 const logoUrl = "/brand/coponya-logo-v4.svg";
-const heroUrl =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663890167905/YhatHEeNFLBL9m3u6y3Nwp/sahm-hero-fixpfM4RqYnrUecg2f4VDV.webp";
 const spotlightUrl =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663890167905/YhatHEeNFLBL9m3u6y3Nwp/sahm-savings-spotlight-knrB4G87CxRHwAHAo2WEjz.webp";
 
@@ -329,21 +328,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="hero-visual">
-                  <img src={heroUrl} alt="رسوم تجريدية لأكواد الخصم والتسوق" />
-                  <div className="floating-receipt">
-                    <span className="receipt-icon">
-                      <Check size={17} />
-                    </span>
-                    <div>
-                      <strong>اختياراتك للتوفير</strong>
-                      <small>اكتشف تفاصيل الكوبون</small>
-                    </div>
-                  </div>
-                  <div className="floating-save">
-                    <span>{isLive ? "اكتشف فرص التوفير" : "توفير تجريبي"}</span>
-                    <strong>{isLive ? "كوبونيا" : <RiyalAmount value={186} />}</strong>
-                    <small>{isLive ? "اختر كوبونك" : "مثال توضيحي"}</small>
-                  </div>
+                  <HeroCoupons coupons={coupons} onReveal={openCoupon} />
                 </div>
               </div>
               <div className="hero-stats container">
@@ -365,6 +350,8 @@ export default function Home() {
                 </div>
               </div>
             </section>
+
+            <StoreTicker stores={stores} />
 
             <section className="section stores-section">
               <div className="container">
