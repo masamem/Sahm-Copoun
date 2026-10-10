@@ -38,7 +38,7 @@ import {
   Zap,
 } from "lucide-react";
 
-const logoUrl = "/brand/coponya-logo-v4.svg";
+const logoUrl = "/brand/coponya-logo-profile.png";
 const spotlightUrl =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663890167905/YhatHEeNFLBL9m3u6y3Nwp/sahm-savings-spotlight-knrB4G87CxRHwAHAo2WEjz.webp";
 
