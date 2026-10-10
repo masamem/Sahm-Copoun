@@ -37,7 +37,7 @@ import {
   Zap,
 } from "lucide-react";
 
-const logoUrl = "/brand/coponya-logo-v4.svg";
+const logoUrl = "/brand/coponya-logo-upload.png";
 const heroUrl =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663890167905/YhatHEeNFLBL9m3u6y3Nwp/sahm-hero-fixpfM4RqYnrUecg2f4VDV.webp";
 const spotlightUrl =
@@ -50,17 +50,7 @@ function BrandMark({ compact = false }: { compact?: boolean }) {
       className={`brand-mark ${compact ? "brand-mark--compact" : ""}`}
       aria-label="كوبونيا، الرئيسية"
     >
-      <span className="brand-mark__symbol">
-        <img src={logoUrl} alt="" />
-      </span>
-      {!compact && (
-        <span className="brand-mark__text">
-          <strong>كوبونيا</strong>
-          <small lang="en" dir="ltr">
-            Coponya
-          </small>
-        </span>
-      )}
+      <img className="brand-mark__logo" src={logoUrl} alt="كوبونيا Coponya" width="1000" height="1000" />
     </Link>
   );
 }
